@@ -1,8 +1,14 @@
+library(shiny)
+library(shinycssloaders)
+
 ui <- fluidPage(
   tags$head(
     tags$style(HTML("
       .wide-textarea {
         width: 100%;
+      }
+      .spinner-container {
+        text-align: center;
       }
     "))
   ),
@@ -17,9 +23,15 @@ ui <- fluidPage(
     ),
     mainPanel(
       h3("Execution Result"),
-      verbatimTextOutput("resultOutput"),
-      verbatimTextOutput("timerOutput")
-      
+      div(
+        class = "spinner-container",
+        withSpinner(
+          verbatimTextOutput("resultOutput"),
+          type = 1,  # Use spinner type 1 (circle)
+          color = "#dc3545",
+          size = 2
+        )
+      )
     )
   )
 )

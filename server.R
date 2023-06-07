@@ -1,8 +1,14 @@
+library(shiny)
+library(shinymaterial)
+
 server <- function(input, output) {
   result <- reactiveVal(NULL)
   script <- reactiveVal(NULL)
+  running <- reactiveVal(FALSE)
   
   observeEvent(input$runButton, {
+    running(TRUE)
+    
     # Check if script file is uploaded or textarea is used
     if (!is.null(input$scriptFile$datapath)) {
       # Read the script file content
@@ -27,10 +33,16 @@ server <- function(input, output) {
       # Close the database connection
       dbDisconnect(carbon)
     }
+    
+    running(FALSE)
   })
   
   output$resultOutput <- renderPrint({
-    result()
+    if (running()) {
+      shinyMaterial::materialSpinner(color = "red")
+    } else {
+      result()
+    }
   })
   
   output$downloadButton <- downloadHandler(
